@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cors</title>
+
+    <style>
+        button {
+            display: block;
+            width: 100px;
+            height: 50px;
+            margin: 0 auto;
+        }
+
+        input {
+            display: block;
+            width: 200px;
+            height: 30px;
+            margin: 2em auto
+        }
+
+        .emoji-list {
+            display: flex;
+            flex-direction: row;
+            list-style: none;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .emoji-list li {
+            margin: 5px 7px;
+            font-size: 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1 style="text-align: center;">How do you feel</h1>
+    <input id="input" type="text">
+
+    <button id="button" onclick="">Click me</button>
+    <div id="emojis">
+
+    </div>
+
+    <script>
+
+        const accessToken = "<YOUR ACCESS TOKEN>";
+
+        async function getEmoji(text) {
+
+            let headers = new Headers();
+            headers.append('Accept', 'application/json');
+
+            const url = `https://api.ritekit.com/v1/emoji/suggestions?text=${text}&client_id=${accessToken}`;
+            const res = await fetch(url, {
+                method: 'GET',
+                headers
+            });
+
+            const { emojis } = await res.json();
+
+            const emojisparent = document.getElementById("emojis");
+
+            const list = document.createElement('ul');
+            list.setAttribute("class", "emoji-list");
+
+            emojisparent.innerHTML = "";
+
+            for (let emoji of emojis.slice(0, 7)) {
+                const item = document.createElement("li");
+                item.innerText = emoji
+                list.append(item)
+            }
+
+            emojisparent.appendChild(list)
+
+
+        }
+
+        document.getElementById("button").addEventListener("click", () => {
+            const { value } = document.getElementById("input");
+            getEmoji(value);
+
+        })
+
+    </script>
+
+</body>
+
+</html>
